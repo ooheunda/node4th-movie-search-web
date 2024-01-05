@@ -21,6 +21,9 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
         movieObjArr.forEach(obj => {
             makeMovieCard(obj);
             movieIdAlert(obj);
+            document.getElementById('searchBtn').addEventListener("click", () => {
+                searchMovie(obj);
+            })
         })
     })
     .catch(err => console.error(err));
@@ -71,4 +74,17 @@ function movieIdAlert(movieObj) {
     imgElement.addEventListener("click", () => {
         window.alert("영화 id: " + movieObj['id']);
     });
+}
+
+// title로 검색
+function searchMovie(movieObj) {
+    let title = (movieObj['title']).toUpperCase();
+    let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
+    const element = document.getElementById(`${movieObj['id']}`);
+
+    if (title.includes(searchStr)) {
+        element.style.display = "grid";
+    } else {
+        element.style.display = "none";
+    }
 }
