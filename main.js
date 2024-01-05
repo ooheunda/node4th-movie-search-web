@@ -11,49 +11,64 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
     .then(response => response.json())
     .then(response => {
         let movies = response['results'];
-        let titles = [];
-        let ids = [];
+        let movieObjArr = [];
 
         movies.forEach(movie => {
-            makeMovieCards(movie);
-            titles.push(movie['title']);
-            ids.push(movie['id']);
-        });
+            let movieObj = makeMovieObj(movie);
+            movieObjArr.push(movieObj);
+        })
 
-        addMovieIdAlert(ids);
-
+        movieObjArr.forEach(obj => {
+            makeMovieCard(obj);
+            movieIdAlert(obj);
+        })
     })
     .catch(err => console.error(err));
 
-// 카드 생성 함수
-function makeMovieCards(movie) {
+// 카드 객체 생성 함수
+function makeMovieObj(movie) {
     let title = movie['title'];
     let overview = movie['overview'];
     let poster_path = movie['poster_path'];
     let vote_average = movie['vote_average'];
     let id = movie['id'];
+    let adult = movie['adult'];
 
     let card_html = `
-    <div class="col">
-        <div class="card h-100">
-            <img src="https://image.tmdb.org/t/p/w300${poster_path}" class="card-img-top" id="${id}" alt="poster image">
-            <div class="card-body">
-                <h5 class="card-title">${title}</h5>
-                <p class="card-text">${overview}</p>
-                <p>${vote_average}</p>
+            <div class="movie-card" id="${id}">
+                <div class="card h-100">
+                    <img src="https://image.tmdb.org/t/p/w300${poster_path}" id="${id}-img" class="card-img-top" alt="poster image">
+                  <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <p class="card-text">${overview}</p>
+                    <p>${vote_average}</p>
+                  </div>
+                </div>
             </div>
-        </div>
-    </div>
-    `;
+            `;
 
-    document.getElementById('cards').innerHTML += card_html;
+    return {
+        title,
+        overview,
+        id,
+        vote_average,
+        poster_path,
+        adult,
+        card_html
+    };
 }
 
-// 영화 카드 이미지 누르면 alert
-function addMovieIdAlert(ids) {
-    ids.forEach(id => {
-        document.getElementById(`${id}`).addEventListener("click", () => {
-            window.alert("영화 id: " + id);
-        })
-    })
+// 카드 html 추가 함수
+function makeMovieCard(movieObj) {
+    let element = document.getElementById('cards');
+    let html = movieObj['card_html'];
+    element.insertAdjacentHTML('beforeend', html);
+}
+
+// 카드 이미지 클릭 시 Alert
+function movieIdAlert(movieObj) {
+    let imgElement = document.getElementById(`${movieObj['id']}-img`);
+    imgElement.addEventListener("click", () => {
+        window.alert("영화 id: " + movieObj['id']);
+    });
 }
