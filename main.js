@@ -11,8 +11,17 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
     .then(response => response.json())
     .then(response => {
         let movies = response['results'];
-        console.log(movies);
-        movies.forEach(movie => makeMovieCards(movie));
+        let titles = [];
+        let ids = [];
+
+        movies.forEach(movie => {
+            makeMovieCards(movie);
+            titles.push(movie['title']);
+            ids.push(movie['id']);
+        });
+
+        addMovieIdAlert(ids);
+
     })
     .catch(err => console.error(err));
 
@@ -22,11 +31,12 @@ function makeMovieCards(movie) {
     let overview = movie['overview'];
     let poster_path = movie['poster_path'];
     let vote_average = movie['vote_average'];
+    let id = movie['id'];
 
     let card_html = `
     <div class="col">
         <div class="card h-100">
-            <img src="https://image.tmdb.org/t/p/w300${poster_path}" class="card-img-top" alt="poster image">
+            <img src="https://image.tmdb.org/t/p/w300${poster_path}" class="card-img-top" id="${id}" alt="poster image">
             <div class="card-body">
                 <h5 class="card-title">${title}</h5>
                 <p class="card-text">${overview}</p>
@@ -37,4 +47,13 @@ function makeMovieCards(movie) {
     `;
 
     document.getElementById('cards').innerHTML += card_html;
+}
+
+// 영화 카드 이미지 누르면 alert
+function addMovieIdAlert(ids) {
+    ids.forEach(id => {
+        document.getElementById(`${id}`).addEventListener("click", () => {
+            window.alert("영화 id: " + id);
+        })
+    })
 }
