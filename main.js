@@ -10,14 +10,16 @@ const options = {
 fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
     .then(response => response.json())
     .then(response => {
+        console.log(response);
         let movies = response['results'];
 
         movies.forEach(movie => {
             makeMovieCard(movie);
             addIdAlertEvent(movie);
-            document.getElementById('searchBtn').addEventListener("click", () => {
-                searchMovie(movie);
-            })
+        })
+
+        document.getElementById('searchBtn').addEventListener("click", () => {
+            searchMovie(movies);
         })
     })
     .catch(err => console.error(err));
@@ -57,14 +59,16 @@ function addIdAlertEvent(movie) {
 }
 
 // title로 검색
-function searchMovie(movie) {
-    let title = (movie['title']).toUpperCase();
-    let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
-    const element = document.getElementById(`${movie['id']}`);
+function searchMovie(movies) {
+    movies.forEach(movie => {
+        let title = (movie['title']).toUpperCase();
+        let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
+        const element = document.getElementById(`${movie['id']}`);
 
-    if (title.includes(searchStr)) {
-        element.style.display = "grid";
-    } else {
-        element.style.display = "none";
-    }
+        if (title.includes(searchStr)) {
+            element.style.display = "grid";
+        } else {
+            element.style.display = "none";
+        }
+    })
 }
