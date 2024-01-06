@@ -11,25 +11,19 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
     .then(response => response.json())
     .then(response => {
         let movies = response['results'];
-        let movieObjArr = [];
 
         movies.forEach(movie => {
-            let movieObj = makeMovieObj(movie);
-            movieObjArr.push(movieObj);
-        })
-
-        movieObjArr.forEach(obj => {
-            makeMovieCard(obj);
-            movieIdAlert(obj);
+            makeMovieCard(movie);
+            addIdAlertEvent(movie);
             document.getElementById('searchBtn').addEventListener("click", () => {
-                searchMovie(obj);
+                searchMovie(movie);
             })
         })
     })
     .catch(err => console.error(err));
 
 // 카드 객체 생성 함수
-function makeMovieObj(movie) {
+function makeMovieCard(movie) {
     let title = movie['title'];
     let overview = movie['overview'];
     let poster_path = movie['poster_path'];
@@ -50,37 +44,23 @@ function makeMovieObj(movie) {
             </div>
             `;
 
-    return {
-        title,
-        overview,
-        id,
-        vote_average,
-        poster_path,
-        adult,
-        card_html
-    };
-}
-
-// 카드 html 추가 함수
-function makeMovieCard(movieObj) {
     let element = document.getElementById('cards');
-    let html = movieObj['card_html'];
-    element.insertAdjacentHTML('beforeend', html);
+    element.insertAdjacentHTML('beforeend', card_html);
 }
 
 // 카드 이미지 클릭 시 Alert
-function movieIdAlert(movieObj) {
-    let imgElement = document.getElementById(`${movieObj['id']}-img`);
+function addIdAlertEvent(movie) {
+    let imgElement = document.getElementById(`${movie['id']}-img`);
     imgElement.addEventListener("click", () => {
-        window.alert("영화 id: " + movieObj['id']);
+        window.alert("영화 id: " + movie['id']);
     });
 }
 
 // title로 검색
-function searchMovie(movieObj) {
-    let title = (movieObj['title']).toUpperCase();
+function searchMovie(movie) {
+    let title = (movie['title']).toUpperCase();
     let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
-    const element = document.getElementById(`${movieObj['id']}`);
+    const element = document.getElementById(`${movie['id']}`);
 
     if (title.includes(searchStr)) {
         element.style.display = "grid";
