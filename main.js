@@ -38,7 +38,7 @@ function makeMovieCard(movie) {
             <div class="movie-card" id="${id}">
                 <img src="https://image.tmdb.org/t/p/w300${poster_path}" id="${id}-img" class="poster" alt="poster image">
                 <div class="card-body">
-                    <div class="card-title">${title}</div>
+                    <div class="card-title"><a href="https://www.themoviedb.org/movie/${id}" target="blank">${title}</a></div>
                     <p class="overview">${overview}</p>
                     <p class="vote-average">${vote_average}</p>
                 </div>
