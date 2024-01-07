@@ -1,4 +1,3 @@
-const TMDB_API_KEY = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhM2UzYzEzYmMxYjMwZWNlZjk2MjJmMjU2YzMzMDA2MSIsInN1YiI6IjY1OTQwYmE5ZTAwNGE2NmNlYzE4YTgzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QQnt5zCSJaCrwSrEPY021o0R2l6mnm3IkuJqQ5ddCAQ';
 // TMDB top lated movie list API request code
 const options = {
     method: 'GET',
