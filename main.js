@@ -1,3 +1,4 @@
+const TMDB_API_KEY = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhM2UzYzEzYmMxYjMwZWNlZjk2MjJmMjU2YzMzMDA2MSIsInN1YiI6IjY1OTQwYmE5ZTAwNGE2NmNlYzE4YTgzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QQnt5zCSJaCrwSrEPY021o0R2l6mnm3IkuJqQ5ddCAQ';
 // TMDB top lated movie list API request code
 const options = {
     method: 'GET',
@@ -24,7 +25,7 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
     })
     .catch(err => console.error(err));
 
-// 카드 객체 생성 함수
+// 카드 생성 함수
 function makeMovieCard(movie) {
     let title = movie['title'];
     let overview = movie['overview'];
@@ -35,18 +36,16 @@ function makeMovieCard(movie) {
 
     let card_html = `
             <div class="movie-card" id="${id}">
-                <div class="card h-100">
-                    <img src="https://image.tmdb.org/t/p/w300${poster_path}" id="${id}-img" class="card-img-top" alt="poster image">
-                  <div class="card-body">
-                    <h5 class="card-title">${title}</h5>
-                    <p class="card-text">${overview}</p>
-                    <p>${vote_average}</p>
-                  </div>
+                <img src="https://image.tmdb.org/t/p/w300${poster_path}" id="${id}-img" class="poster" alt="poster image">
+                <div class="card-body">
+                    <div class="card-title">${title}</div>
+                    <p class="overview">${overview}</p>
+                    <p class="vote-average">${vote_average}</p>
                 </div>
             </div>
             `;
 
-    let element = document.getElementById('cards');
+    let element = document.getElementById('cardBox');
     element.insertAdjacentHTML('beforeend', card_html);
 }
 
@@ -63,7 +62,7 @@ function searchMovie(movies) {
     movies.forEach(movie => {
         let title = (movie['title']).toUpperCase();
         let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
-        const element = document.getElementById(`${movie['id']}`);
+        let element = document.getElementById(`${movie['id']}`);
 
         if (title.includes(searchStr)) {
             element.style.display = "grid";
