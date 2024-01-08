@@ -1,3 +1,4 @@
+const TMDB_API_KEY = '';
 // TMDB top lated movie list API request code
 const options = {
     method: 'GET',
@@ -10,7 +11,6 @@ const options = {
 fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
     .then(response => response.json())
     .then(response => {
-        console.log(response);
         let movies = response['results'];
 
         movies.forEach(movie => {
@@ -18,8 +18,18 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
             addIdAlertEvent(movie);
         })
 
+        let moreBtn = `
+        <button class="moreBtn" id="moreBtn">more</button>
+        `;
+        let element = document.getElementById('cardBox');
+        element.insertAdjacentHTML('beforeend', moreBtn);
+
         document.getElementById('searchMovie').addEventListener("keyup", () => {
             searchMovie(movies);
+        })
+
+        document.getElementById('moreBtn').addEventListener("click", () => {
+            moreFunc();
         })
     })
     .catch(err => console.error(err));
@@ -31,7 +41,6 @@ function makeMovieCard(movie) {
     let poster_path = movie['poster_path'];
     let vote_average = movie['vote_average'];
     let id = movie['id'];
-    let adult = movie['adult'];
 
     let card_html = `
             <div class="movie-card" id="${id}">
@@ -56,11 +65,12 @@ function addIdAlertEvent(movie) {
     });
 }
 
-// title로 검색
+// title로 검색 (대소문자, 공백 구분 X)
 function searchMovie(movies) {
+    let searchStr = (document.getElementById('searchMovie').value).toUpperCase().replace(" ", "");
+
     movies.forEach(movie => {
-        let title = (movie['title']).toUpperCase();
-        let searchStr = (document.getElementById('searchMovie').value).toUpperCase();
+        let title = (movie['title']).toUpperCase().replace(" ", "");
         let element = document.getElementById(`${movie['id']}`);
 
         if (title.includes(searchStr)) {
@@ -68,5 +78,40 @@ function searchMovie(movies) {
         } else {
             element.style.display = "none";
         }
+
     })
+
+    //moreBtn display
+    if (searchStr !== "") {
+        document.getElementById('moreBtn').style.display = "none";
+    } else {
+        document.getElementById('moreBtn').style.display = "block";
+    }
+}
+
+let page = 2;
+
+function moreFunc() {
+    let url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=' + page;
+    fetch(url, options)
+        .then(response => response.json())
+        .then(response => {
+            let movies = response['results'];
+
+            movies.forEach(movie => {
+                makeMovieCard(movie);
+                addIdAlertEvent(movie);
+            })
+
+            let moreBtn = document.getElementById('moreBtn');
+            let element = document.getElementById('cardBox');
+            element.appendChild(moreBtn);
+
+            document.getElementById('searchMovie').addEventListener("keyup", () => {
+                searchMovie(movies);
+            })
+        })
+        .catch(err => console.error(err));
+
+    page++;
 }
